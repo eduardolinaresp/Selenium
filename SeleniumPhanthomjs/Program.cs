@@ -16,23 +16,24 @@ namespace SeleniumPhanthomjs
 
             int flag1, flag2, flag3;
 
-            flag1 = flag2 = flag3 = 0;
+            flag1 = 0; flag2 = 0; flag3 = 0;
 
-            //flag1 = Ejemplo1.main();
+            PrincipalPage pp = new PrincipalPage();
 
-            //flag2 = Ejemplo2.main();  
+            flag1 = pp.main();
 
-            //flag3 = datosGov.main();
+            //MiddlePage mp = new MiddlePage();
 
-                  
-            //flag3 = StaticHtmlPage.main();
+            //flag2 = pp.main();
 
-            //Internet inter = new Internet();
+            //FinalPage fp = new FinalPage();
 
-            //flag3 = inter.main();
+            //flag3 = finpag.main();
 
 
-            if (flag1 + flag2  == 0)
+           
+
+            if (flag1 + flag2 + flag3 == 0)
             {
                 return 0;
             }

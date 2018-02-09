@@ -10,7 +10,7 @@ using System.Text;
 
 namespace SeleniumPhanthomjs
 {
-    public class Internet
+    public class FinalPage
     {
 
 
@@ -23,9 +23,8 @@ namespace SeleniumPhanthomjs
 
             string htmlPage = HtmlInput();
 
-            string htmlpage = htmlPage;
-
-            htmlDoc.LoadHtml(htmlpage);
+        
+            htmlDoc.LoadHtml(htmlPage);
 
             var strListHtmlData = (from m in htmlDoc.DocumentNode
                             .Descendants("div")
@@ -212,12 +211,6 @@ namespace SeleniumPhanthomjs
             }
             catch (NoSuchElementException) { }
             catch (StaleElementReferenceException) { }
-
-
-
-            //IWebElement objecElement = _driver.FindElement(By.XPath("//html//body//div//div//div//section//div//div//div//iframe"));
-
-
 
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(60));
 
