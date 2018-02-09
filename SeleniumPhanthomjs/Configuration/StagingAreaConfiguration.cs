@@ -16,6 +16,8 @@ namespace SeleniumPhanthomjs.Configuration
 
             this.HasKey<int>(s => s.Id);
 
+            this.Property(p => p.Fecha);
+
             this.Property(p => p._id);
 
             this.Property(p => p.item);

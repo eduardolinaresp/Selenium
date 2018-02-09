@@ -87,6 +87,10 @@
     <Compile Include="Migrations\201802062116056_initial.Designer.cs">
       <DependentUpon>201802062116056_initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802092034404_agregaColumnaFecha.cs" />
+    <Compile Include="Migrations\201802092034404_agregaColumnaFecha.Designer.cs">
+      <DependentUpon>201802092034404_agregaColumnaFecha.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\urlPaginas.cs" />
     <Compile Include="Model\StagingArea.cs" />
@@ -96,6 +100,7 @@
     <Compile Include="Examples\StaticHtmlPage.cs" />
     <Compile Include="Examples\Ejemplo1.cs" />
     <Compile Include="Examples\Ejemplo2.cs" />
+    <Compile Include="Process\UnifyProcess.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -135,6 +140,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201802062116056_initial.resx">
       <DependentUpon>201802062116056_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802092034404_agregaColumnaFecha.resx">
+      <DependentUpon>201802092034404_agregaColumnaFecha.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

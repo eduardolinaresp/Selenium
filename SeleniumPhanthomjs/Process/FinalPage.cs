@@ -71,11 +71,7 @@ namespace SeleniumPhanthomjs
         {
 
             List<StagingArea> CleanStage = new List<StagingArea>();
-
-            var itemToRemove = tabStage.SingleOrDefault(r => r._id == "4");
-
-           
-                tabStage.Remove(itemToRemove);
+                            
 
             var diccionario = new[] { "3", "4", "11", "12", "13"
                                      ,"21", "22", "23", "24", "25"

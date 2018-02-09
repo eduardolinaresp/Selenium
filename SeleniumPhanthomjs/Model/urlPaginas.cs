@@ -11,6 +11,7 @@ namespace SeleniumPhanthomjs
        
         public string url { get; set; }
         public int  anio { get; set; }
+        public string Fecha { get; set; }
 
     }
 }

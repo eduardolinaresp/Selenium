@@ -9,6 +9,7 @@ namespace SeleniumPhanthomjs
     {
 
         public int    Id { get; set; }
+        public string Fecha { get; set; }
         public string _id { get; set;} 
         public string item { get; set; }
         public string detalle { get; set; }

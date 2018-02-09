@@ -43,9 +43,58 @@ namespace SeleniumPhanthomjs.Process
             HtmlWeb web = new HtmlWeb();
             HtmlDocument document = web.Load(_url);
 
+          
+            var hrefList = document.DocumentNode.SelectNodes("//a")
+                        .Where(d =>
+                                  d.Attributes.Contains("class")
+                                  &&
+                                  d.Attributes["class"].Value.Contains("heading")
+
+                              )
+                         .Select(p => new {
+                                            nommes = p.Attributes["title"].Value
+                                           , url = p.GetAttributeValue("href", "not found").ToString()
+                                           }
+                                 )
+                         .ToList();
+
+            int anio = 0;
+            DateTime nomMes;
+
+            List<urlPaginas> listupag = new List<urlPaginas>();
+
+            foreach (var item in hrefList)
+            {
+              var splitter =  item.nommes.Split(new char[0]).ToArray();
+
+                urlPaginas upag = new urlPaginas();
+
+                anio = 0;
+
+                for (int i = 0; i < splitter.Count(); i++)
+                {
+
+                   if (int.TryParse(splitter[i],out anio))
+                    {
+
+                        upag.anio = anio;
+
+                    }
+
+                    if (DateTime.TryParse(string.Concat(splitter[i],"-" , "2017", "-","01"), out nomMes))
+                    {
+                        upag.Fecha = nomMes.ToShortDateString();
+                    }
+             
+                }
 
 
-            document.
+                upag.url = item.url;
+                listupag.Add(upag);
+                                                               
+            }
+
+                     
 
 
             return 1; 

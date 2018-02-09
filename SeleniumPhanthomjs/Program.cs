@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SeleniumPhanthomjs.Process;
 
 namespace SeleniumPhanthomjs
 {
@@ -18,20 +19,22 @@ namespace SeleniumPhanthomjs
 
             flag1 = 0; flag2 = 0; flag3 = 0;
 
-            PrincipalPage pp = new PrincipalPage();
+            //PrincipalPage pp = new PrincipalPage();
 
-            flag1 = pp.main();
+            //flag1 = pp.main();
 
             //MiddlePage mp = new MiddlePage();
 
-            //flag2 = pp.main();
+            //flag2 = mp.Main();
 
             //FinalPage fp = new FinalPage();
 
             //flag3 = finpag.main();
 
+            UnifyProcess uprocess = new UnifyProcess();
 
-           
+            flag3 = uprocess.Main();
+
 
             if (flag1 + flag2 + flag3 == 0)
             {
