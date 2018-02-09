@@ -49,6 +49,8 @@ namespace SeleniumPhanthomjs
                          select m.ToList()).ToList();
 
 
+            //htmlDoc.OptionAutoCloseOnEnd = true;
+
             var TabStage = this.setStaginArea(strListHtmlData);
 
             var FinalTabStage = this.RemoveRowsNotvalid(TabStage);
@@ -245,9 +247,7 @@ namespace SeleniumPhanthomjs
 
 
 
-            HtmlAgilityPack.HtmlDocument iframeDoc = new HtmlAgilityPack.HtmlDocument();
-
-
+           
             string cadena = (string)_driver.PageSource.ToString();
 
             _driver.Quit();

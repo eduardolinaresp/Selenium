@@ -24,26 +24,15 @@ namespace SeleniumPhanthomjs
 
             //flag3 = datosGov.main();
 
-            //flag3 =  Transponer.main();
+                  
+            //flag3 = StaticHtmlPage.main();
 
-            //flag3 =  final.main();
+            //Internet inter = new Internet();
 
-            //flag3 =  directo.main();
-
-            //flag2 = directov3.main();
-
-            //flag3 = directov4.main();
-
-            //flag2 = nuevo.main();
-
-            //flag3 = nuevo2.main();
-
-            Internet inter = new Internet();
-
-            flag3 = inter.main();
+            //flag3 = inter.main();
 
 
-          if (flag1 + flag2  == 0)
+            if (flag1 + flag2  == 0)
             {
                 return 0;
             }

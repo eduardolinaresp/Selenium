@@ -8,7 +8,7 @@ using System.Text;
 
 namespace SeleniumPhanthomjs
 {
-    public class nuevo
+    public class StaticHtmlPage
     {
 
 
@@ -22,30 +22,29 @@ namespace SeleniumPhanthomjs
             string htmlpage = row;
 
             html.LoadHtml(htmlpage);
-
-            var html6 = html.DocumentNode
+            
+            var html6 = (from m in html.DocumentNode
                             .Descendants("div")
-                                .Where(d =>
-                                       d.Attributes.Contains("class")
-                                       &&
-                                       d.Attributes["class"].Value.Contains("grid-canvas")
-                                       )
-                                .SelectMany
-                                       (tr => tr.Elements("div")
-                                              .Where(p =>
-                                                     p.Attributes.Contains("class")
-                                                     &&
-                                                     p.ChildNodes.Count() > 1
-                                                     )
-                                        )
-                                .ToList()
-                                       .Select
-                                              (tr => tr.Elements("div")
-                                                     .Select(y => y.InnerText.Trim()
+                            .Where(d =>
+                                   d.Attributes.Contains("class")
+                                   &&
+                                   d.Attributes["class"].Value.Contains("grid-canvas")
+                                   )
+                            .SelectMany(tr => tr.Elements("div")
+                                       .Where(p =>
+                                              p.Attributes.Contains("class")
+                                              &&
+                                              p.ChildNodes.Count() > 1
                                               )
-                                       )
-                               .ToList();
+                             ).ToList()
+                             .Select(tr => tr.Elements("div")
+                                             .Select(y=> y.InnerText.Trim()
+                                                    )
+                                     )
+                                     .ToList()
+                         select m.ToList());
 
+                      
 
             return 1;
 
