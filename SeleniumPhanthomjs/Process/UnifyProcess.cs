@@ -51,7 +51,7 @@ namespace SeleniumPhanthomjs.Process
 
             var htmlDoc = new HtmlDocument();
 
-            string htmlPage = HtmlInput(_driver, _url);
+            string htmlPage = getHtmlFromIframe(_driver, _url);
 
             htmlDoc.LoadHtml(htmlPage);
 
@@ -111,7 +111,7 @@ namespace SeleniumPhanthomjs.Process
 
             tabStage.RemoveAll(p => p.valor == string.Empty);
 
-            tabStage.RemoveAll(p => p.item.Contains("ITEM"));
+           // tabStage.RemoveAll(p => p.item.Contains("ITEM"));
 
             decimal numero;
 
@@ -217,37 +217,37 @@ namespace SeleniumPhanthomjs.Process
                                   )
                            .Select(p => new
                                         {
-                                         nommes = p.Attributes["title"].Value,
+                                         docName = p.Attributes["title"].Value,
                                          url = p.GetAttributeValue("href", "not found").ToString()
                                         }
                                   ).ToList();
 
-            int anio = 0;
-            DateTime nomMes;
+            int _intYear = 0;
+            DateTime _docDate;
 
             List<urlPaginas> listupag = new List<urlPaginas>();
 
             foreach (var item in hrefList)
             {
-                var splitter = item.nommes.Split(new char[0]).ToArray();
+                var docNameSplitAtSpace = item.docName.Split(new char[0]).ToArray();
 
                 urlPaginas upag = new urlPaginas();
 
-                anio = 0;
+                _intYear = 0;
 
-                for (int i = 0; i < splitter.Count(); i++)
+                for (int i = 0; i < docNameSplitAtSpace.Count(); i++)
                 {
 
-                    if (int.TryParse(splitter[i], out anio))
+                    if (int.TryParse(docNameSplitAtSpace[i], out _intYear))
                     {
 
-                        upag.anio = anio;
+                        upag.anio = _intYear;
 
                     }
 
-                    if (DateTime.TryParse(string.Concat(splitter[i], "-", _urlPage.anio, "-", "01"), out nomMes))
+                    if (DateTime.TryParse(string.Concat(docNameSplitAtSpace[i], "-", _urlPage.anio, "-", "01"), out _docDate))
                     {
-                        upag.Fecha = nomMes.ToShortDateString();
+                        upag.Fecha = _docDate.ToShortDateString();
                     }
 
                 }
@@ -293,45 +293,42 @@ namespace SeleniumPhanthomjs.Process
                                 )
                            .Select(p => new
                                        {
-                                           stranio = p.InnerText.Where(Char.IsDigit),
+                                           digitDocYear = p.InnerText.Where(Char.IsDigit),
                                            url = p.GetAttributeValue("href", "not found").ToString(),
                                            intanio = 0
                                        }
                                    )
                                    .ToList();
 
-            string numero;
-            int numeroint;
+            string _strYear;
+            int _intYear;
 
             List<urlPaginas> lstUpag = new List<urlPaginas>();
 
-            foreach (var item in hrefList)
+            foreach (var row in hrefList)
             {
-                numero = string.Empty;
+                _strYear = string.Empty;
 
                 urlPaginas upag = new urlPaginas();
 
-                upag.url = string.Concat("http://datos.gob.cl", item.url);
+                upag.url = string.Concat(_baseUrl, row.url);
 
-                foreach (var item2 in item.stranio)
+                foreach (var _digitYear in row.digitDocYear)
                 {
 
-                    numero = string.Concat(numero, item2);
+                    _strYear = string.Concat(_strYear, _digitYear);
 
                 }
 
-                int.TryParse(numero, out numeroint);
-                upag.anio = numeroint;
+                int.TryParse(_strYear, out _intYear);
+                upag.anio = _intYear;
 
                 lstUpag.Add(upag);
             }
 
-
             int maxyear = lstUpag.Select(p => p.anio).Max();
 
-
             lstUpag.RemoveAll(p => p.anio != maxyear);
-
 
             return lstUpag;
         }
@@ -355,11 +352,9 @@ namespace SeleniumPhanthomjs.Process
         }
 
 
-        private string HtmlInput(IWebDriver _driver, string _url)
+        private string getHtmlFromIframe(IWebDriver _driver, string _url)
         {
-
-             _driver.Navigate().GoToUrl(_url);
-
+            _driver.Navigate().GoToUrl(_url);
 
             try
             {
@@ -370,7 +365,6 @@ namespace SeleniumPhanthomjs.Process
             catch (StaleElementReferenceException) { }
 
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(60));
-
 
             wait.Until<IWebElement>((d) =>
             {
@@ -392,16 +386,13 @@ namespace SeleniumPhanthomjs.Process
 
                 return null;
 
-
             });
 
 
             string htmlPage = (string)_driver.PageSource.ToString();
-
-
+            
             return htmlPage;
-
-
+            
         }
     }
 }
