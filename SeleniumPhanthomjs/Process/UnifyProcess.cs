@@ -91,18 +91,18 @@ namespace SeleniumPhanthomjs.Process
             List<StagingArea> CleanStage = new List<StagingArea>();
 
 
-            var diccionario = new[] { "3", "4", "11", "12", "13"
-                                     ,"21", "22", "23", "24", "25"
-                                     ,"26", "27", "28", "29", "30"
-                                     ,"33", "34", "35"
-                                    };
+            //var diccionario = new[] { "3", "4", "11", "12", "13"
+            //                         ,"21", "22", "23", "24", "25"
+            //                         ,"26", "27", "28", "29", "30"
+            //                         ,"33", "34", "35"
+            //                        };
 
-            //var dic = string.IsNullOrWhiteSpace;
+            ////var dic = string.IsNullOrWhiteSpace;
 
-            tabStage.RemoveAll(p => p.valor.Contains("Discontinuado"));
+          
 
             
-            tabStage.RemoveAll(p => diccionario.Contains(p._id));
+            //tabStage.RemoveAll(p => diccionario.Contains(p._id));
 
             foreach (var mc in tabStage.Where(x => x.detalle.Contains("Valor UF")
                                                 || x.detalle.Contains("Valor UTM")))
@@ -111,7 +111,7 @@ namespace SeleniumPhanthomjs.Process
                 mc.unidad = string.Empty;
             }
 
-
+            tabStage.RemoveAll(p => p.valor.Contains(string.Empty));
 
             CleanStage = tabStage;
 
