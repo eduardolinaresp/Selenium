@@ -17,7 +17,7 @@ namespace SeleniumPhanthomjs
 
             int flag1, flag2, flag3;
 
-            flag1 = 0; flag2 = 0; flag3 = 0;
+            flag1 = flag2 = flag3 = 0;
 
             //PrincipalPage pp = new PrincipalPage();
 
@@ -29,7 +29,7 @@ namespace SeleniumPhanthomjs
 
             //FinalPage fp = new FinalPage();
 
-            //flag3 = finpag.main();
+            //flag3 = fp.main();
 
             UnifyProcess uprocess = new UnifyProcess();
 

@@ -19,7 +19,8 @@ namespace SeleniumPhanthomjs
 
             int retorno = 1;
 
-            var driverService = PhantomJSDriverService.CreateDefaultService(AppDomain.CurrentDomain.BaseDirectory);
+            var driverService = PhantomJSDriverService.
+            CreateDefaultService(AppDomain.CurrentDomain.BaseDirectory);
             driverService.HideCommandPromptWindow = true;
             driverService.LoadImages = false;
 

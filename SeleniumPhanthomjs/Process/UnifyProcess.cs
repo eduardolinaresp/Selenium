@@ -22,25 +22,20 @@ namespace SeleniumPhanthomjs.Process
 
             IWebDriver _driver = ConfigureDriver();
 
-            List<urlPaginas> _UrlLastPoly = GetLastPostedPolynomial(_driver);
+            List<urlPaginas> _lastPolyUrl = GetLastPolynomialPosted(_driver);
 
-            List<urlPaginas> _ListUrls = GetUrlsByLastPostedPolynomial(_driver, _UrlLastPoly[0]);
+            List<urlPaginas> _urlsList = GetUrlsByLastPolynomialPosted(_driver, _lastPolyUrl[0]);
 
-            List<StagingArea> _ListStagingByMonth = new List<StagingArea>();
+            List<StagingArea> _stageAreaListByMonth = new List<StagingArea>();
 
-            foreach (var item in _ListUrls)
+            foreach (var item in _urlsList)
             {
-
-                _ListStagingByMonth.AddRange(DoScrapingByMonth(_driver,item.url, item.Fecha));
-     
+                _stageAreaListByMonth.AddRange(DoScrapingByMonth(_driver,item.url, item.Fecha));
             }
-
 
             _driver.Quit();
 
-
-
-            if (SaveData(_ListStagingByMonth))
+            if (SaveData(_stageAreaListByMonth))
             {
                 returnCode = 0;
             }
@@ -56,41 +51,41 @@ namespace SeleniumPhanthomjs.Process
 
             string htmlPage = HtmlInput(_driver, _url);
 
-
             htmlDoc.LoadHtml(htmlPage);
 
-            var strListHtmlData = (from m in htmlDoc.DocumentNode
-                            .Descendants("div")
-                            .Where(d =>
-                                   d.Attributes.Contains("class")
-                                   &&
-                                   d.Attributes["class"].Value.Contains("grid-canvas")
-                                   )
-                            .SelectMany(tr => tr.Elements("div")
-                                       .Where(p =>
-                                              p.Attributes.Contains("class")
-                                              &&
-                                              p.ChildNodes.Count() > 1
-                                              )
-                             ).ToList()
-                             .Select(tr => tr.Elements("div")
-                                             .Select(y => y.InnerText.Trim()
-                                                    )
-                                     )
-                                     .ToList()
-                                   select m.ToList()).ToList();
+            var strHtmlDataList = 
+                          (
+                            from m in htmlDoc.DocumentNode
+                                    .Descendants("div")
+                                    .Where(d =>
+                                           d.Attributes.Contains("class")
+                                           &&
+                                           d.Attributes["class"].Value.Contains("grid-canvas")
+                                           )
+                                    .SelectMany(tr => tr.Elements("div")
+                                               .Where(p =>
+                                                          p.Attributes.Contains("class")
+                                                          &&
+                                                          p.ChildNodes.Count() > 1
+                                                      )
+                                                ).ToList()
+                                                 .Select(tr => tr.Elements("div")
+                                                                 .Select(y => y.InnerText.Trim())
+                                                        ).ToList()
+                             select m.ToList()
+                           ).ToList();
 
 
             //htmlDoc.OptionAutoCloseOnEnd = true;
 
-            var TabStage = this.setStaginArea(strListHtmlData);
+            var TabStage = this.setStaginArea(strHtmlDataList, _fecha);
 
-            var FinalTabStage = this.RemoveNotvalidRows(TabStage);
+            var FinalTabStage = this.RemoveNotValidRows(TabStage);
 
             return FinalTabStage;
         }
 
-        private List<StagingArea> RemoveNotvalidRows(List<StagingArea> tabStage)
+        private List<StagingArea> RemoveNotValidRows(List<StagingArea> tabStage)
         {
 
             List<StagingArea> CleanStage = new List<StagingArea>();
@@ -102,6 +97,11 @@ namespace SeleniumPhanthomjs.Process
                                      ,"33", "34", "35"
                                     };
 
+            //var dic = string.IsNullOrWhiteSpace;
+
+            tabStage.RemoveAll(p => p.valor.Contains("Discontinuado"));
+
+            
             tabStage.RemoveAll(p => diccionario.Contains(p._id));
 
             foreach (var mc in tabStage.Where(x => x.detalle.Contains("Valor UF")
@@ -119,54 +119,51 @@ namespace SeleniumPhanthomjs.Process
             return CleanStage;
         }
 
-        private List<StagingArea> setStaginArea(List<List<string>> html6)
+        private List<StagingArea> setStaginArea(List<List<string>> strHtmlDataList, string _fecha)
         {
             List<StagingArea> TabStage = new List<StagingArea>();
 
-
-            for (int i = 0; i < html6.Count; i++)
+            for (int i = 0; i < strHtmlDataList.Count; i++)
             {
                 StagingArea stg = new StagingArea();
 
-                for (int j = 0; j < html6[i].Count; j++)
+                for (int j = 0; j < strHtmlDataList[i].Count; j++)
                 {
-
-
+                
                     switch (j)
                     {
                         case 0:
 
-                            stg._id = html6[i][j].ToString();
+                            stg._id = strHtmlDataList[i][j].ToString();
                             break;
                         case 1:
 
-                            stg.item = html6[i][j].ToString();
+                            stg.item = strHtmlDataList[i][j].ToString();
                             break;
 
                         case 2:
 
-                            stg.detalle = html6[i][j].ToString();
+                            stg.detalle = strHtmlDataList[i][j].ToString();
                             break;
 
                         case 3:
 
-                            stg.unidad = html6[i][j].ToString();
+                            stg.unidad = strHtmlDataList[i][j].ToString();
                             break;
 
                         case 4:
 
-                            stg.valor = html6[i][j].ToString();
+                            stg.valor = strHtmlDataList[i][j].ToString();
                             break;
                     }
 
                 }
 
+                stg.Fecha = _fecha;
+
                 TabStage.Add(stg);
 
             }
-
-            Console.WriteLine();
-
 
             return TabStage;
             
@@ -186,49 +183,41 @@ namespace SeleniumPhanthomjs.Process
                 IsCorrect = true;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                Console.Write(ex.Message);
-                // Trace.TraceError("Error al grabar en BI_CGESTION");
+                                 
                 IsCorrect = false;
             }
 
             return IsCorrect;
         }
 
-        private List<urlPaginas> GetUrlsByLastPostedPolynomial(IWebDriver _driver, urlPaginas _urlPage)
+        private List<urlPaginas> GetUrlsByLastPolynomialPosted(IWebDriver _driver,
+                                                               urlPaginas _urlPage)
         {
-
 
             string _baseUrl = _urlPage.url;
 
             _driver.Navigate().GoToUrl(_baseUrl);
 
-
             string _url = _driver.Url;
-
-
-            //_driver.Quit();
 
             HtmlWeb web = new HtmlWeb();
             HtmlDocument document = web.Load(_url);
 
-
             var hrefList = document.DocumentNode.SelectNodes("//a")
-                        .Where(d =>
+                           .Where(d =>
                                   d.Attributes.Contains("class")
                                   &&
                                   d.Attributes["class"].Value.Contains("heading")
 
-                              )
-                         .Select(p => new
+                                  )
+                           .Select(p => new
                                         {
-                                         nommes = p.Attributes["title"].Value
-                                         ,url = p.GetAttributeValue("href", "not found").ToString()
-                         }
-                                 )
-                         .ToList();
+                                         nommes = p.Attributes["title"].Value,
+                                         url = p.GetAttributeValue("href", "not found").ToString()
+                                        }
+                                  ).ToList();
 
             int anio = 0;
             DateTime nomMes;
@@ -269,7 +258,7 @@ namespace SeleniumPhanthomjs.Process
             return listupag;
         }
 
-        private List<urlPaginas> GetLastPostedPolynomial(IWebDriver _driver)
+        private List<urlPaginas> GetLastPolynomialPosted(IWebDriver _driver)
         {
             string _baseUrl = "http://datos.gob.cl/dataset";
 
@@ -291,7 +280,6 @@ namespace SeleniumPhanthomjs.Process
             HtmlWeb web = new HtmlWeb();
             HtmlDocument document = web.Load(_url);
 
-
             var hrefList = document.DocumentNode.SelectNodes("//a")
                           .Where(d =>
                                 //d.Attributes.Contains("class")
@@ -301,13 +289,11 @@ namespace SeleniumPhanthomjs.Process
                                 d.InnerText.Contains("Índices")
                                 )
                            .Select(p => new
-                           {
-                               stranio = p.InnerText.Where(Char.IsDigit)
-                                               ,
-                               url = p.GetAttributeValue("href", "not found").ToString()
-                                               ,
-                               intanio = 0
-                           }
+                                       {
+                                           stranio = p.InnerText.Where(Char.IsDigit),
+                                           url = p.GetAttributeValue("href", "not found").ToString(),
+                                           intanio = 0
+                                       }
                                    )
                                    .ToList();
 
