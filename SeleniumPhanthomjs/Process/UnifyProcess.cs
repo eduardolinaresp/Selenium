@@ -15,6 +15,8 @@ namespace SeleniumPhanthomjs.Process
 
         private static BDContext dbase = new BDContext();
 
+        private string  _baseUrl { get; set; }
+
         public int Main()
         {
 
@@ -97,11 +99,7 @@ namespace SeleniumPhanthomjs.Process
             //                         ,"33", "34", "35"
             //                        };
 
-            ////var dic = string.IsNullOrWhiteSpace;
-
-          
-
-            
+                   
             //tabStage.RemoveAll(p => diccionario.Contains(p._id));
 
             foreach (var mc in tabStage.Where(x => x.detalle.Contains("Valor UF")
@@ -111,11 +109,16 @@ namespace SeleniumPhanthomjs.Process
                 mc.unidad = string.Empty;
             }
 
-            tabStage.RemoveAll(p => p.valor.Contains(string.Empty));
+            tabStage.RemoveAll(p => p.valor == string.Empty);
+
+            tabStage.RemoveAll(p => p.item.Contains("ITEM"));
+
+            decimal numero;
+
+            tabStage.RemoveAll(p => decimal.TryParse(p.valor,out numero) != true);
 
             CleanStage = tabStage;
-
-
+            
             return CleanStage;
         }
 
@@ -250,7 +253,7 @@ namespace SeleniumPhanthomjs.Process
                 }
 
 
-                upag.url = string.Concat("http://datos.gob.cl", item.url);
+                upag.url = string.Concat(this._baseUrl, item.url);
                 listupag.Add(upag);
 
             }
@@ -260,7 +263,7 @@ namespace SeleniumPhanthomjs.Process
 
         private List<urlPaginas> GetLastPolynomialPosted(IWebDriver _driver)
         {
-            string _baseUrl = "http://datos.gob.cl/dataset";
+             this._baseUrl = "http://datos.gob.cl";
 
             _driver.Navigate().GoToUrl(_baseUrl);
 
