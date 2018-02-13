@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,10 @@ namespace Selenium_Console
     class Program
     {
 
-        IWebDriver driver = new ChromeDriver(); 
+        IWebDriver driver = new ChromeDriver();
+
+        private string _baseUrl { get; set; }
+
 
         static void Main(string[] args)
         {
@@ -48,8 +52,9 @@ namespace Selenium_Console
         public void Initialized()
         {
 
+            _baseUrl = "http://www.bencinaenlinea.cl/web2/buscador.php?region=1";
 
-            driver.Navigate().GoToUrl("http://executeautomation.com/demosite/index.html");
+            driver.Navigate().GoToUrl(_baseUrl);
             Console.WriteLine("open url");
         }
 
@@ -57,27 +62,88 @@ namespace Selenium_Console
         public void ExceutedTest()
         {
 
-            // title 
+            List<StagingArea> _stageAreaListByRegion = new List<StagingArea>();
 
-            SeleniumSetMethod.SelectDropDown(driver, "TitleId", "Mr.", "Id");
+            IList<IWebElement> regionslist = GetRegions(driver);
 
-            // Initial 
+            foreach (var item in regionslist)
+            {
 
-            SeleniumSetMethod.EnterText(driver, "Initial", "Execute.", "Name");
+                _stageAreaListByRegion.AddRange(DoScrapingByRegion(driver, item.Text, DateTime.Now));
+
+            }
+
+          
+            Assert.IsTrue(_stageAreaListByRegion.Count >= 1);
+
+        }
+
+        private IEnumerable<StagingArea> DoScrapingByRegion(IWebDriver _driver, string _region, DateTime fecha)
+        {
+
+            List<StagingArea> TabStage = new List<StagingArea>();
+
+            SeleniumSetMethod.SelectDropDown(_driver, "reporte_region", _region, "Name");
+
+            SeleniumSetMethod.SelectDropDown(_driver, "reporte_combustible", "Petroleo Diesel", "Name");
 
 
-            Console.WriteLine("valor desde title" + SeleniumGetMethod.GetTextFromDDL(driver, "TitleId", "Id"));
+            IList<IWebElement> elements = _driver.FindElements(By.CssSelector("input"));
 
-            Console.WriteLine("valor desde initial" + SeleniumGetMethod.GetText(driver, "Initial", "Name"));
+            foreach (IWebElement element in elements)
+            {
+                if (element.GetAttribute("type").Equals("button"))
+                {
+                    element.Click();
+                }
+                
+            }
+           
 
-            // click 
+            IWebElement table = _driver.FindElement(By.Id("tabla_resumen"));
 
-            SeleniumSetMethod.Click(driver, "Save", "Name");
+            //Console.ReadKey();
 
-            //IWebElement element = driver.FindElement(By.Name("q"));
+            IList<IWebElement> rows = table.FindElements(By.TagName("td"));
 
-            //element.SendKeys("executeautomation");
 
+            foreach (var item in rows)
+            {
+
+                StagingArea stg = new StagingArea();
+
+                stg.Fecha = fecha.ToShortDateString();
+                stg.Granularidad = "Diaro";
+                stg.Tipo = "Petroleo";
+                string[] nuemro = item.Text.Split(':');
+                stg.Valor = nuemro[1];
+                stg.Url = _baseUrl;
+
+                TabStage.Add(stg);
+
+            }
+
+
+            return TabStage;
+        }
+
+        private IList<IWebElement> GetRegions(IWebDriver _driver)
+        {
+            List<IWebElement> allOptions = new List<IWebElement>();
+
+            try
+            {
+                IWebElement selectElement = _driver.FindElement(By.Id("reporte_region"));
+                SelectElement select = new SelectElement(selectElement);
+
+                allOptions = select.Options.ToList();
+
+
+            }
+            catch (Exception) { }
+
+
+            return allOptions;
         }
 
         [TearDown]
