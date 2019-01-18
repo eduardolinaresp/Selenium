@@ -7,7 +7,7 @@ Ejemplos Selenium &amp; Phanthomjs
     
 #### 1.1-Con Visual Studio 
 
-     1.1.1 Ir a Menú Herramientas->administrador de paquetes NuGet->Consola del administrador de paquetes
+     1.1.1 Ir a Menú Compilar->Compilar Solucion
      1.1.2 En la consola digitar Update-Package 
      1.1.3 Mas documentación en https://docs.microsoft.com/en-us/nuget/consume-packages/reinstalling-and-updating-packages
      1.1.4 Ir a Menú Proyecto->Agregar Nuevo Elemento->Elementos de Visual C#->Archivo de configuracion de aplicaciones
