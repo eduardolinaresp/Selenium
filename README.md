@@ -1,5 +1,6 @@
-# Selenium
-Ejemplos Selenium &amp; Phanthomjs
+# Descripción del proyecto
+
+ El proyecto consiste en generar unos programas web scraper con dotnet standard y registrar el resultado en una base de datos
 
 ## Inicializar proyecto 
 
