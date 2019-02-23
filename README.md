@@ -18,6 +18,10 @@
      1.1.7 Mas documentación en https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/connection-strings-and-configuration-files
      1.1.8 Ejemplo del punto 1.1.6 
            <add name="con" connectionString="Data Source=localhost;Initial Catalog=mydatabase;User ID=myuser;Password=mypass" providerName="System.Data.SqlClient" />
+           
+ #### 1.2-Desde el terminal
+ 
+  TODO...
      
       
 
